@@ -1,13 +1,37 @@
 import os
-from discord import app_commands, Intents, Client, Interaction
-from dotenv import load_dotenv
+import time
+
+try:
+    from discord import app_commands, Intents, Client, Interaction
+except ImportError:
+    print("Error: No se pudo importar la librería 'discord.py'.")
+    time.sleep(5)   
+    exit(1)
+
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    print("Error: No se pudo importar la librería 'python-dotenv'.")
+    time.sleep(5)
+    exit(1)
 
 # Cargar variables de entorno desde el archivo .env
+if not os.path.exists('.env'):
+    with open('.env', 'w') as f:
+        f.write("TOKEN=\n")
+    print("Archivo .env creado, por favor ingrese el token del bot.")    
+
 load_dotenv()
 
 # Obtener el token del bot desde las variables de entorno
 my_secret = os.getenv('TOKEN')
 
+# Si el token no está definido, solicitarlo al usuario
+if not my_secret:
+    my_secret = input("Por favor, ingrese el token del bot: ")
+    with open('.env', 'a') as f:
+        f.write(f'TOKEN={my_secret}\n')
+     
 # Definición de la clase principal del bot
 class Bot(Client):
     def __init__(self, *, intents: Intents):
@@ -30,8 +54,5 @@ async def on_ready():
 async def givemebadge(interaction: Interaction):
     await interaction.response.send_message("Listo!, espera 24 horas para reclamar la insignia\nPuedes reclamarla aquí: https://discord.com/developers/active-developer")
 
-# Verificar si el token está definido y ejecutar el bot
-if my_secret:
-    bot.run(my_secret) 
-else:
-    print("Error: El token no está definido en las variables de entorno.")
+# Ejecutar el bot con el token
+bot.run(my_secret) 
