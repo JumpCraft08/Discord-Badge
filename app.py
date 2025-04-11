@@ -54,12 +54,6 @@ except ImportError:
 
 # Obtener el token del bot desde las variables de entorno
 my_secret = "" or input(lan[IDIOMA]["input_TOKEN"])
-
-# Si el token no está definido, solicitarlo al usuario
-if not my_secret:
-    my_secret = input("Por favor, ingrese el token del bot: ")
-    with open('.env', 'a') as f:
-        f.write(f'TOKEN={my_secret}\n')
      
 # Definición de la clase principal del bot
 class Bot(Client):
